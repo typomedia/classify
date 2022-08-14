@@ -3,6 +3,8 @@
 namespace Strikebit\Util\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 use Strikebit\Util\ClassPrototypeInterface;
 use Strikebit\Util\PhpGenerator;
 
@@ -113,5 +115,26 @@ class PhpGeneratorTest extends TestCase
         $matchOutput = file_get_contents(__DIR__ . '/fixtures/sample-fluent-setters.txt');
 
         $this->assertSame($output, $matchOutput);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testExportedClasses()
+    {
+        $file = file_get_contents(__DIR__ . '/fixtures/Issue.json');
+        $issue = json_decode($file, false);
+
+        $reflection = new ReflectionClass($issue);
+        $namespace = $reflection->getNamespaceName();
+        $className = $reflection->getShortName();
+        $generator = new PhpGenerator(true, true, $namespace);
+        $generator->fromObject($className, $issue);
+
+        foreach ($generator->getClasses() as $class) {
+            $actual = $generator->printClass($class->getClassName());
+            $expected = file_get_contents(__DIR__ . '/fixtures/' . $class->getClassName() . '.php');
+            $this->assertSame($expected, $actual);
+        }
     }
 }
