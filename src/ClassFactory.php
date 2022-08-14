@@ -34,13 +34,13 @@ class ClassFactory implements ClassFactoryInterface
     }
 
     /**
-     * @param string      $className
-     * @param \stdClass   $obj
-     * @param array       $objects
+     * @param string $className
+     * @param object $obj
+     * @param array $objects
      *
      * @return array
      */
-    public function create(string $className, \stdClass $obj, array $objects = []): array
+    public function create(string $className, $obj, array $objects = []): array
     {
         $newClass = new ClassPrototype($className, $this->useTypeHinting, $this->useFluentSetters, $this->namespace);
 

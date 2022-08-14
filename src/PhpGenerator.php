@@ -44,6 +44,18 @@ class PhpGenerator
     }
 
     /**
+     * @param string $className
+     * @param object $object
+     * @return array
+     */
+    public function fromObject(string $className, $object): array
+    {
+        $this->classes = $this->factory->create($className, $object);
+
+        return $this->classes;
+    }
+
+    /**
      * Print output of classes into string
      *
      * @return string
@@ -58,5 +70,32 @@ class PhpGenerator
         }
 
         return $str;
+    }
+
+    /**
+     * Print output of classes into string
+     *
+     * @return string
+     */
+    public function printClass($name): string
+    {
+        $str = '';
+
+        /** @var ClassPrototypeInterface $value */
+        $classes = $this->classes;
+
+        if (isset($classes[$name])) {
+            $str = $classes[$name];
+        }
+
+        return $str;
+    }
+
+    /**
+     * @return ClassPrototypeInterface[]
+     */
+    public function getClasses(): array
+    {
+        return $this->classes;
     }
 }
